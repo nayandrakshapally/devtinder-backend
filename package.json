@@ -1,0 +1,28 @@
+{
+  "name": "devtinder-backend",
+  "version": "1.0.0",
+  "description": "Devtinder app backend",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nayandrakshapally/devtinder-backend.git"
+  },
+  "keywords": [
+    "nodejs",
+    "expressjs",
+    "mongodb"
+  ],
+  "author": "Drakshapally Nayan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nayandrakshapally/devtinder-backend/issues"
+  },
+  "homepage": "https://github.com/nayandrakshapally/devtinder-backend#readme",
+  "dependencies": {
+    "express": "^4.21.1",
+    "nodemon": "^3.1.7"
+  }
+}
