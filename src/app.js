@@ -1,39 +1,32 @@
 const express = require("express");
+const connectDb = require("./config/database");
+const User = require("./models/user");
 
 const app = express();
-const { adminAuth, userAuth } = require("./middlewares/auth");
 
-app.use("/admin", adminAuth);
-
-app.get("/admin/dashboard", (req, res) => {
-  res.send("Here we go dashboard!");
-});
-
-app.get("/admin/graphs", (req, res) => {
-  res.send("Here we go graphs!");
-});
-
-app.get("/user", userAuth, (req, res) => {
-  res.send("Here we go user!");
-});
-
-app.get("/user/login", (req, res) => {
-  //try catch implementation is must for each route to handle errors
+app.post("/signup", (req, res) => {
+  const user = new User({
+    firstName: "nipun",
+    lastName: "drakshapally",
+    gender: "male",
+    age: 28,
+    emailId: "nipun.drak@gmail.com",
+    passWord: "test1234",
+  });
   try {
-    throw new Error("big error!");
-    res.send("Here we go user login!");
+    user.save();
+    res.status(200).send("User saved successfully on to db");
   } catch (err) {
-    res.status(400).send("error in this login api");
+    res.status(500).send(" Failed User insertion on to db");
   }
 });
-
-// Global error handling is must and should keep this at the end of all the routes
-app.use("/", (err, req, res, next) => {
-  if (err) {
-    res.status(500).send("something went wrong");
-  }
-});
-
-app.listen(4000, () => {
-  console.log("Backend is running on port 4000");
-});
+connectDb()
+  .then(() => {
+    console.log("DB connection established!");
+    app.listen(4000, () => {
+      console.log("Backend is running on port 4000");
+    });
+  })
+  .catch(() => {
+    console.log("Error connecting DB!");
+  });
