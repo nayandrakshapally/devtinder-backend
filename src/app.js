@@ -4,7 +4,7 @@ const User = require("./models/user");
 
 const app = express();
 
-app.post("/signup", (req, res) => {
+app.post("/signup", async (req, res) => {
   const user = new User({
     firstName: "nipun",
     lastName: "drakshapally",
@@ -14,7 +14,7 @@ app.post("/signup", (req, res) => {
     passWord: "test1234",
   });
   try {
-    user.save();
+    await user.save();
     res.status(200).send("User saved successfully on to db");
   } catch (err) {
     res.status(500).send(" Failed User insertion on to db");
