@@ -17,6 +17,10 @@ app.get("/user", userAuth, (req, res) => {
   res.send("Here we go user!");
 });
 
+app.get("/user/login", (req, res) => {
+  res.send("Here we go user login!");
+});
+
 app.listen(4000, () => {
   console.log("Backend is running on port 4000");
 });
