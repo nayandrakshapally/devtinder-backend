@@ -13,7 +13,7 @@ app.post("/signup", async (req, res) => {
     await user.save();
     res.status(200).send("User saved successfully on to db");
   } catch (err) {
-    res.status(500).send(" Failed User insertion on to db");
+    res.status(500).send(" Failed User insertion on to db" + err.message);
   }
 });
 
@@ -62,10 +62,10 @@ app.patch("/updateUser", async (req, res) => {
   const userId = req.body.userId;
   const data = req.body;
   try {
-    await User.findByIdAndUpdate(userId, data);
+    await User.findByIdAndUpdate(userId, data, { runValidators: true });
     res.send("user updated successfully");
   } catch (err) {
-    res.status(404).send("Update api error");
+    res.status(404).send("Update api error"+err.message);
   }
 });
 
