@@ -84,7 +84,7 @@ app.delete("/deleteUser", async (req, res) => {
   }
 });
 
-//Update user api
+// Update user api
 app.patch("/updateUser/:userId", async (req, res) => {
   const userId = req.params?.userId;
   const data = req.body;
@@ -111,6 +111,25 @@ app.patch("/updateUser/:userId", async (req, res) => {
     res.send("user updated successfully");
   } catch (err) {
     res.status(404).send("Update api error" + err.message);
+  }
+});
+
+// Login api
+app.post("/login", async (req, res) => {
+  const { emailId, passWord } = req.body;
+  try {
+    const user = await User.findOne({ emailId: emailId });
+    if (!user) {
+      throw new Error("Invalid credentials");
+    }
+    const isPasswordValid = await bcrypt.compare(passWord, user.passWord);
+    if (isPasswordValid) {
+      res.send("Login is successful!");
+    } else {
+      throw new Error("Invalid credentials");
+    }
+  } catch (err) {
+    res.status(404).send("Error: " + err.message);
   }
 });
 
