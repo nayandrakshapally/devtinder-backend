@@ -11,4 +11,4 @@ const validateSignUpApi = (req) => {
   }
 };
 
-module.exports = validateSignUpApi;
+module.exports = {validateSignUpApi};

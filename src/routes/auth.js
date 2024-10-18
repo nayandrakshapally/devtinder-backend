@@ -1,8 +1,8 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
-const validateSignUpApi = require("../utils/validateSignupApi");
+const { validateSignUpApi } = require("../utils/validation");
 
 const router = express.Router();
 
@@ -55,6 +55,14 @@ router.post("/login", async (req, res) => {
   } catch (err) {
     res.status(400).send("ERROR : " + err.message);
   }
+});
+
+router.post("/logout", async (req, res) => {
+  res
+    .cookie("token", null, {
+      expires: new Date(Date.now()),
+    })
+    .send("User logged out successfully!");
 });
 
 module.exports = router;
