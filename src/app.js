@@ -3,10 +3,13 @@ const connectDb = require("./config/database");
 const User = require("./models/user");
 const validateSignUpApi = require("./utils/validateSignupApi");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 // Signup api
 app.post("/signup", async (req, res) => {
@@ -44,76 +47,6 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-// Feed api
-app.get("/feed", async (req, res) => {
-  try {
-    const users = await User.find({});
-    if (users.length > 0) {
-      res.send(users);
-    } else {
-      res.status(404).send("No users found");
-    }
-  } catch (err) {
-    res.status(404).send("Feed api error");
-  }
-});
-
-// User api
-app.get("/user", async (req, res) => {
-  const userEmail = req.body.emailId;
-  try {
-    const users = await User.find({ emailId: userEmail });
-    if (users.length > 0) {
-      res.send(users);
-    } else {
-      res.status(404).send("No user found");
-    }
-  } catch (err) {
-    res.status(404).send("User api error");
-  }
-});
-
-// Delete user api
-app.delete("/deleteUser", async (req, res) => {
-  const userId = req.body.userId;
-  try {
-    await User.findByIdAndDelete(userId);
-    res.send("user deleted successfully");
-  } catch (err) {
-    res.status(404).send("Delete api error");
-  }
-});
-
-// Update user api
-app.patch("/updateUser/:userId", async (req, res) => {
-  const userId = req.params?.userId;
-  const data = req.body;
-  try {
-    const ALLOWED_UPDATES = [
-      "userId",
-      "photoUrl",
-      "about",
-      "skills",
-      "password",
-      "gender",
-      "age",
-    ];
-    const isUpdateAllowed = Object.keys(data).every((k) =>
-      ALLOWED_UPDATES.includes(k)
-    );
-    if (!isUpdateAllowed) {
-      throw new Error("update not allowed");
-    }
-    if (data.skills.length > 3) {
-      throw new Error("skills should be max three");
-    }
-    await User.findByIdAndUpdate(userId, data, { runValidators: true });
-    res.send("user updated successfully");
-  } catch (err) {
-    res.status(404).send("Update api error" + err.message);
-  }
-});
-
 // Login api
 app.post("/login", async (req, res) => {
   const { emailId, passWord } = req.body;
@@ -124,12 +57,35 @@ app.post("/login", async (req, res) => {
     }
     const isPasswordValid = await bcrypt.compare(passWord, user.passWord);
     if (isPasswordValid) {
+      // Create a JWT Token
+      const token = await jwt.sign({ _id: user._id }, "DEV@Tinder$790");
+      // Add the token to cookie and send the response back to the user
+      res.cookie("token", token);
       res.send("Login is successful!");
     } else {
       throw new Error("Invalid credentials");
     }
   } catch (err) {
     res.status(404).send("Error: " + err.message);
+  }
+});
+
+app.get("/profile", async (req, res) => {
+  try {
+    const cookies = req.cookies;
+    const { token } = cookies;
+    if (!token) {
+      throw new Error("Invalid Token");
+    }
+    const decodedMessage = await jwt.verify(token, "DEV@Tinder$790");
+    const { _id } = decodedMessage;
+    const user = await User.findById(_id);
+    if (!user) {
+      throw new Error("User does not exist");
+    }
+    res.send(user);
+  } catch (err) {
+    res.status(400).send("ERROR : " + err.message);
   }
 });
 
