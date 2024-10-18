@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema(
     },
     lastName: {
       type: String,
+      default: "",
     },
     gender: {
       type: String,
@@ -22,6 +23,7 @@ const userSchema = new mongoose.Schema(
     },
     age: {
       type: Number,
+      default: 0
     },
     emailId: {
       type: String,
@@ -41,6 +43,7 @@ const userSchema = new mongoose.Schema(
     },
     photoUrl: {
       type: String,
+      default: "this is default photoUrl"
     },
     about: {
       type: String,
