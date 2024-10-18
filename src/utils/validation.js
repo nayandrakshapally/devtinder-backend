@@ -11,4 +11,22 @@ const validateSignUpApi = (req) => {
   }
 };
 
-module.exports = {validateSignUpApi};
+const validateEditProfileApi = (req) => {
+  const ALLOWED_KEYS = [
+    "firstName",
+    "lastName",
+    "age",
+    "gender",
+    "skills",
+    "photo",
+    "photoUrl",
+    "about",
+    "_id",
+  ];
+  const isEditAllowed = Object.keys(req.body).every((field) =>
+    ALLOWED_KEYS.includes(field)
+  );
+  return isEditAllowed;
+};
+
+module.exports = { validateSignUpApi, validateEditProfileApi };
