@@ -1,13 +1,13 @@
 const validator = require("validator");
 
 const validateSignUpApi = (req) => {
-  const { firstName, passWord, emailId } = req.body;
-  if (!firstName) {
-    throw new Error("FirstName is required");
+  const { firstName, lastName, emailId, password } = req.body;
+  if (!firstName || !lastName) {
+    throw new Error("Name is not valid!");
   } else if (!validator.isEmail(emailId)) {
-    throw new Error("emailId is not valid");
-  } else if (!validator.isStrongPassword(passWord)) {
-    throw new Error("password is not strong");
+    throw new Error("Email is not valid!");
+  } else if (!validator.isStrongPassword(password)) {
+    throw new Error("Please enter a strong Password!");
   }
 };
 
